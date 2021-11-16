@@ -1,11 +1,17 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@{ ViewData["Title"] = "Home Page"; }
+
+
 
 <link href="~/css/c3.min.css" rel="stylesheet" />
 
-<h3 id="city_name"></h3>
-<div id="chart"></div>
+<div class="text-center">
+    <button class="btn btn-info" onclick="getDataAsync()">הצג מזג אוויר</button>
+</div>
+<section id="weather">
+    <h3 id="city_name"></h3>
+    <div id="chart"></div>
+</section>
+
 
 @section Scripts {
 
@@ -13,15 +19,18 @@
     <script src="~/js/c3.min.js"></script>
     <script type="text/javascript">
 
-       
-        document.addEventListener("DOMContentLoaded",async  function () {
-       
-            //get data information
-            await getDataAsync();
-        });
-      
 
-       async function getDataAsync() {
+        document.addEventListener("DOMContentLoaded",async  function () {
+
+            //get data information
+           // await getDataAsync();
+        });
+
+
+        async function getDataAsync() {
+            //disable btn
+            $(".btn").prop("disabled", true);
+
            try {
                 await $.get('@Url.Action("GetData")', function (data) {
                     $("#city_name").html(data.city.name);
@@ -55,6 +64,9 @@
                         }
                     });
                 });
+
+               //show result
+               $("#weather").show(1000);
            }
            catch (ex) {
                console.error(ex);
