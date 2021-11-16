@@ -13,41 +13,52 @@
     <script src="~/js/c3.min.js"></script>
     <script type="text/javascript">
 
-        $(document).ready(function () {
-
-            getData();
+       
+        document.addEventListener("DOMContentLoaded",async  function () {
+       
+            //get date information
+            await getDataAsync();
         });
+      
 
-        function getData() {
-               $.get('@Url.Action("GetData")', function (data) {
-                $("#city_name").html(data.city.name);
+       async function getDataAsync() {
+           try {
+                await $.get('@Url.Action("GetData")', function (data) {
+                    $("#city_name").html(data.city.name);
 
-                var dates = data.list.map(x => x.dt_txt);
-                var temp = data.list.map(x => x.main.temp);
+                    //init date array
+                        var dates = data.list.map(x => x.dt_txt);
 
-                //add date to first position in array
-                dates.unshift('date');
+                    //init temp array
+                    var temp = data.list.map(x => x.main.temp);
 
-                 //add Tempature to first position in array
-                temp.unshift('Tempature');
+                    //add 'date' to first position in array (title)
+                    dates.unshift('date');
 
-                c3.generate({
-                    bindto: '#chart',
-                    data: {
-                        x: 'date',
-                        xFormat: '%Y-%m-%d %H:%M:%S', // how the date is parsed
-                        columns: [dates,temp],
-                    },
-                    axis: {
-                        x: {
-                            type: 'timeseries',
-                            tick: {
-                                format: '%d/%m %H:%M'
+                        //add 'Tempature' to first position in array (title)
+                    temp.unshift('Tempature');
+
+                    c3.generate({
+                        bindto: '#chart',
+                        data: {
+                            x: 'date',
+                            xFormat: '%Y-%m-%d %H:%M:%S', // how the date is parsed
+                            columns: [dates,temp],
+                        },
+                        axis: {
+                            x: {
+                                type: 'timeseries',
+                                tick: {
+                                    format: '%d/%m %H:%M'
+                                }
                             }
                         }
-                    }
+                    });
                 });
-            });
+           }
+           catch (ex) {
+               console.error(ex);
+           }
         }
     </script>
 }
